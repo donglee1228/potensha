@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>포텐샤 · POTENSHA</title>
+<meta name="description" content="포텐샤 — 생각, 기록, 리뷰를 담는 개인 블로그" />
+<style>
+  :root{
+    --bg:#101317; --bg2:#14181e; --card:#191e26; --card2:#1f2530;
+    --line:#2a313d; --ink:#e8eaed; --muted:#9aa3b0; --dim:#6b7484;
+    --gold:#d4af37; --gold-soft:#e7c86a; --red:#b5313f; --red-deep:#8b1e2d;
+    --radius:14px; --maxw:1120px;
+    --font: "Pretendard","Segoe UI","Apple SD Gothic Neo",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:var(--font); color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 82% -10%, rgba(212,175,55,.07), transparent 60%),
+      radial-gradient(900px 500px at -5% 8%, rgba(181,49,63,.08), transparent 55%),
+      var(--bg);
+    line-height:1.65; letter-spacing:.1px;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 촘촘한 노이즈 텍스처 */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.05;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px; position:relative; z-index:1}
+  a{color:inherit; text-decoration:none}
+
+  /* 헤더 */
+  header.site{
+    position:sticky; top:0; z-index:20;
+    backdrop-filter:saturate(140%) blur(10px);
+    background:linear-gradient(180deg, rgba(16,19,23,.92), rgba(16,19,23,.72));
+    border-bottom:1px solid var(--line);
+  }
+  .bar{display:flex; align-items:center; gap:18px; height:66px}
+  .brand{display:flex; align-items:baseline; gap:10px; font-weight:800; letter-spacing:.5px}
+  .brand .ko{font-size:22px; background:linear-gradient(90deg,var(--gold),var(--gold-soft)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .brand .en{font-size:11px; color:var(--dim); letter-spacing:3px; text-transform:uppercase}
+  nav.top{margin-left:auto; display:flex; gap:4px; flex-wrap:wrap}
+  nav.top a{padding:8px 13px; border-radius:9px; color:var(--muted); font-size:14px; font-weight:600; transition:.15s}
+  nav.top a:hover{color:var(--ink); background:var(--card)}
+  nav.top a.on{color:var(--gold); background:rgba(212,175,55,.08)}
+
+  /* 히어로 */
+  .hero{padding:58px 0 30px; border-bottom:1px solid var(--line)}
+  .kicker{display:inline-flex; align-items:center; gap:8px; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--red); font-weight:700}
+  .kicker::before{content:""; width:26px; height:2px; background:linear-gradient(90deg,var(--red),transparent)}
+  .hero h1{font-size:clamp(30px,5vw,50px); line-height:1.15; margin:14px 0 10px; font-weight:800}
+  .hero h1 em{font-style:normal; color:var(--gold)}
+  .hero p{max-width:620px; color:var(--muted); font-size:17px; margin:0}
+
+  /* 레이아웃 */
+  .cols{display:grid; grid-template-columns:1fr 290px; gap:40px; padding:40px 0 60px}
+  @media(max-width:860px){ .cols{grid-template-columns:1fr} }
+
+  .section-h{display:flex; align-items:center; gap:12px; margin:0 0 18px}
+  .section-h h2{font-size:15px; letter-spacing:2px; text-transform:uppercase; color:var(--dim); margin:0; font-weight:700}
+  .section-h .rule{flex:1; height:1px; background:var(--line)}
+
+  /* 피처드 */
+  .feat{
+    position:relative; overflow:hidden; border:1px solid var(--line);
+    border-radius:var(--radius); background:linear-gradient(135deg,var(--card),var(--bg2));
+    padding:30px; margin-bottom:30px;
+  }
+  .feat::after{content:""; position:absolute; right:-40px; top:-40px; width:200px; height:200px;
+    background:radial-gradient(circle, rgba(212,175,55,.14), transparent 70%)}
+  .feat .tag{color:var(--red); font-weight:700; font-size:12px; letter-spacing:1px}
+  .feat h3{font-size:26px; margin:10px 0 10px; line-height:1.25}
+  .feat p{color:var(--muted); margin:0 0 16px; max-width:640px}
+  .feat .meta{font-size:13px; color:var(--dim)}
+
+  /* 포스트 그리드 */
+  .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px}
+  @media(max-width:560px){ .grid{grid-template-columns:1fr} }
+  .card{
+    border:1px solid var(--line); border-radius:var(--radius); background:var(--card);
+    padding:22px; transition:.18s; position:relative;
+  }
+  .card:hover{transform:translateY(-3px); border-color:#39424f; background:var(--card2)}
+  .card .cat{font-size:12px; font-weight:700; letter-spacing:1px; color:var(--gold)}
+  .card h3{font-size:18px; margin:9px 0 8px; line-height:1.35}
+  .card p{color:var(--muted); font-size:14px; margin:0 0 14px}
+  .card .meta{font-size:12px; color:var(--dim); display:flex; gap:10px; align-items:center}
+  .card .meta .dot{width:3px;height:3px;border-radius:50%;background:var(--dim)}
+
+  /* 사이드바 */
+  aside{display:flex; flex-direction:column; gap:22px}
+  .widget{border:1px solid var(--line); border-radius:var(--radius); background:var(--card); padding:20px}
+  .widget h4{margin:0 0 14px; font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim)}
+  .profile{text-align:center}
+  .avatar{width:66px;height:66px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,var(--gold),var(--red-deep)); display:grid; place-items:center;
+    font-weight:800; font-size:26px; color:#13161b}
+  .profile .name{font-weight:800; font-size:17px}
+  .profile .role{color:var(--muted); font-size:13px; margin-top:4px}
+  .cats{list-style:none; margin:0; padding:0}
+  .cats li{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px dashed var(--line); font-size:14px; color:var(--muted)}
+  .cats li:last-child{border-bottom:0}
+  .cats li span.n{color:var(--dim); font-size:12px}
+  .tags{display:flex; flex-wrap:wrap; gap:8px}
+  .tags a{font-size:12px; padding:5px 11px; border:1px solid var(--line); border-radius:20px; color:var(--muted)}
+  .tags a:hover{border-color:var(--gold); color:var(--gold)}
+
+  footer.site{border-top:1px solid var(--line); padding:34px 0; color:var(--dim); font-size:13px}
+  footer.site .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px}
+  .note{margin-top:30px; padding:14px 16px; border:1px dashed var(--line); border-radius:10px; color:var(--dim); font-size:13px; background:rgba(255,255,255,.015)}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#">
+      <span class="ko">포텐샤</span><span class="en">Potensha</span>
+    </a>
+    <nav class="top">
+      <a href="#" class="on">홈</a>
+      <a href="#posts">글</a>
+      <a href="#">생각</a>
+      <a href="#">리뷰</a>
+      <a href="#">기록</a>
+      <a href="#about">소개</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="kicker">Potensha Journal</span>
+    <h1>잠재력을 <em>기록</em>하는 공간,<br>포텐샤.</h1>
+    <p>생각나는 것, 써보고 싶은 것, 남겨두고 싶은 것을 자유롭게 적는 블로그입니다. 아래는 샘플 레이아웃이에요 — 내용은 나중에 자유롭게 채우면 됩니다.</p>
+  </div>
+</section>
+
+<div class="wrap cols">
+  <main>
+    <div class="section-h"><h2>Featured</h2><div class="rule"></div></div>
+    <article class="feat">
+      <span class="tag">● 생각</span>
+      <h3>첫 글은 늘 가장 쓰기 어렵다</h3>
+      <p>빈 페이지를 마주했을 때의 막막함에 대하여. 완벽한 첫 문장을 기다리기보다, 일단 한 줄을 적는 것에서 모든 게 시작된다는 이야기. (샘플 본문)</p>
+      <div class="meta">포텐샤 · 2026. 11. 5. · 4분 읽기</div>
+    </article>
+
+    <div class="section-h" id="posts"><h2>Latest</h2><div class="rule"></div></div>
+    <div class="grid">
+      <article class="card">
+        <span class="cat">리뷰</span>
+        <h3>요즘 자주 쓰는 도구 3가지</h3>
+        <p>일상과 작업을 조금 더 매끄럽게 만들어 준 소소한 것들에 대한 짧은 기록.</p>
+        <div class="meta">2026. 11. 4.<span class="dot"></span>3분</div>
+      </article>
+      <article class="card">
+        <span class="cat">기록</span>
+        <h3>11월의 루틴 점검</h3>
+        <p>계획과 실제 사이의 간극을 메모해두기. 다음 달의 나에게 남기는 메시지.</p>
+        <div class="meta">2026. 11. 2.<span class="dot"></span>5분</div>
+      </article>
+      <article class="card">
+        <span class="cat">생각</span>
+        <h3>속도보다 방향</h3>
+        <p>빠르게 가는 것과 제대로 가는 것 사이에서 균형을 잡는 법에 대한 메모.</p>
+        <div class="meta">2026. 10. 29.<span class="dot"></span>6분</div>
+      </article>
+      <article class="card">
+        <span class="cat">일상</span>
+        <h3>주말 저녁의 작은 의식</h3>
+        <p>한 주를 정리하고 다음 주를 준비하는, 나만의 조용한 루틴 이야기.</p>
+        <div class="meta">2026. 10. 25.<span class="dot"></span>2분</div>
+      </article>
+    </div>
+
+    <div class="note" id="about">
+      ✎ 이 페이지는 <b>포텐샤</b> 블로그의 기본 템플릿입니다. 글 카드·카테고리·소개 글은 모두 샘플이며, 실제 내용은 언제든 교체할 수 있어요.
+    </div>
+  </main>
+
+  <aside>
+    <div class="widget profile">
+      <div class="avatar">P</div>
+      <div class="name">포텐샤</div>
+      <div class="role">쓰는 사람 · Writer</div>
+    </div>
+    <div class="widget">
+      <h4>카테고리</h4>
+      <ul class="cats">
+        <li>생각 <span class="n">8</span></li>
+        <li>리뷰 <span class="n">5</span></li>
+        <li>기록 <span class="n">12</span></li>
+        <li>일상 <span class="n">7</span></li>
+      </ul>
+    </div>
+    <div class="widget">
+      <h4>태그</h4>
+      <div class="tags">
+        <a href="#">#일상</a><a href="#">#생각정리</a><a href="#">#리뷰</a>
+        <a href="#">#루틴</a><a href="#">#기록</a><a href="#">#취향</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© 2026 포텐샤 · Potensha Journal</span>
+    <span>made with ♦ dark &amp; gold</span>
+  </div>
+</footer>
+
+</body>
+</html>
